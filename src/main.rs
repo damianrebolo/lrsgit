@@ -2,6 +2,7 @@ use std::{error::Error, time::Duration};
 
 mod app;
 mod crossterm;
+mod git;
 mod ui;
 mod utils;
 

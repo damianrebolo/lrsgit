@@ -1,12 +1,15 @@
 use ratatui::{
     layout::{Alignment, Constraint, Direction, Layout, Rect},
-    style::{Color, Style},
-    widgets::{block::Title, Block, BorderType, Borders, Paragraph},
+    style::{Color, Modifier, Style, Stylize},
+    text::{self, Span},
+    widgets::{
+        block::Title, Block, BorderType, Borders, List, ListDirection, ListItem, Padding, Paragraph,
+    },
     Frame,
 };
 
 use crate::app::App;
-use crate::utils;
+use crate::utils::Blocks;
 
 const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
 
@@ -97,7 +100,7 @@ fn draw_main_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(if app.current_block == utils::Blocks::Main {
+        .border_style(if app.current_block == Blocks::Main {
             Style::default().fg(Color::Green)
         } else {
             Style::default()
@@ -113,7 +116,7 @@ fn draw_commandlog_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(if app.current_block == utils::Blocks::Logs {
+        .border_style(if app.current_block == Blocks::Logs {
             Style::default().fg(Color::Green)
         } else {
             Style::default()
@@ -129,7 +132,7 @@ fn draw_status_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(if app.current_block == utils::Blocks::First {
+        .border_style(if app.current_block == Blocks::First {
             Style::default().fg(Color::Green)
         } else {
             Style::default()
@@ -145,7 +148,7 @@ fn draw_files_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(if app.current_block == utils::Blocks::Second {
+        .border_style(if app.current_block == Blocks::Second {
             Style::default().fg(Color::Green)
         } else {
             Style::default()
@@ -156,12 +159,13 @@ fn draw_files_block(frame: &mut Frame, app: &mut App, area: Rect) {
     frame.render_widget(block, area);
 }
 
-fn draw_localbranches_block(frame: &mut Frame, app: &mut App, area: Rect) {
+fn draw_localbranches_block(frame: &mut Frame, app: &App, area: Rect) {
     let title = Title::from(" [3]-Local Branches");
 
     let block = Block::bordered()
         .title(title)
-        .border_style(if app.current_block == utils::Blocks::Third {
+        .padding(Padding::new(1, 1, 0, 0))
+        .border_style(if app.current_block == Blocks::Third {
             Style::default().fg(Color::Green)
         } else {
             Style::default()
@@ -169,7 +173,20 @@ fn draw_localbranches_block(frame: &mut Frame, app: &mut App, area: Rect) {
         .border_type(BorderType::Plain)
         .borders(Borders::ALL);
 
-    frame.render_widget(block, area);
+    let branches: Vec<ListItem> = app
+        .branches
+        .iter()
+        .map(|i| ListItem::new(vec![text::Line::from(Span::raw(i))]))
+        .collect();
+
+    let list = List::new(branches)
+        .block(block)
+        .style(Style::new().white())
+        .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+        .highlight_symbol("> ")
+        .direction(ListDirection::TopToBottom);
+
+    frame.render_widget(list, area);
 }
 
 fn draw_commits_block(frame: &mut Frame, app: &mut App, area: Rect) {
@@ -177,7 +194,7 @@ fn draw_commits_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(if app.current_block == utils::Blocks::Fourth {
+        .border_style(if app.current_block == Blocks::Fourth {
             Style::default().fg(Color::Green)
         } else {
             Style::default()
@@ -193,7 +210,7 @@ fn draw_stash_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(if app.current_block == utils::Blocks::Fifth {
+        .border_style(if app.current_block == Blocks::Fifth {
             Style::default().fg(Color::Green)
         } else {
             Style::default()

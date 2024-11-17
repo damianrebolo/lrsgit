@@ -1,9 +1,12 @@
+use crate::git::branch::get_localbranches;
 use crate::utils::Blocks;
+
 use crossterm::event::KeyCode;
 
 pub struct App {
     pub should_quit: bool,
     pub current_block: Blocks,
+    pub branches: Vec<String>,
 }
 
 impl App {
@@ -11,11 +14,14 @@ impl App {
         App {
             should_quit: false,
             current_block: Blocks::First,
+            branches: vec![],
         }
     }
 
     // update widgets
-    pub fn on_tick(&mut self) {}
+    pub fn on_tick(&mut self) {
+        self.branches = get_localbranches();
+    }
 
     // handle key events
     pub fn on_key(&mut self, key_code: KeyCode) {
