@@ -1,11 +1,12 @@
 use ratatui::{
     layout::{Alignment, Constraint, Direction, Layout, Rect},
-    style::{Color, Style, Stylize},
+    style::{Color, Style},
     widgets::{block::Title, Block, BorderType, Borders, Paragraph},
     Frame,
 };
 
 use crate::app::App;
+use crate::utils;
 
 const VERSION: Option<&str> = option_env!("CARGO_PKG_VERSION");
 
@@ -96,7 +97,11 @@ fn draw_main_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(Style::default())
+        .border_style(if app.current_block == utils::Blocks::Main {
+            Style::default().fg(Color::Green)
+        } else {
+            Style::default()
+        })
         .border_type(BorderType::Plain)
         .borders(Borders::ALL);
 
@@ -108,7 +113,11 @@ fn draw_commandlog_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(Style::default())
+        .border_style(if app.current_block == utils::Blocks::Logs {
+            Style::default().fg(Color::Green)
+        } else {
+            Style::default()
+        })
         .border_type(BorderType::Plain)
         .borders(Borders::ALL);
 
@@ -120,7 +129,11 @@ fn draw_status_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(Style::default().fg(Color::Green))
+        .border_style(if app.current_block == utils::Blocks::First {
+            Style::default().fg(Color::Green)
+        } else {
+            Style::default()
+        })
         .border_type(BorderType::Plain)
         .borders(Borders::ALL);
 
@@ -132,7 +145,11 @@ fn draw_files_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(Style::default())
+        .border_style(if app.current_block == utils::Blocks::Second {
+            Style::default().fg(Color::Green)
+        } else {
+            Style::default()
+        })
         .border_type(BorderType::Plain)
         .borders(Borders::ALL);
 
@@ -144,7 +161,11 @@ fn draw_localbranches_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(Style::default())
+        .border_style(if app.current_block == utils::Blocks::Third {
+            Style::default().fg(Color::Green)
+        } else {
+            Style::default()
+        })
         .border_type(BorderType::Plain)
         .borders(Borders::ALL);
 
@@ -156,7 +177,11 @@ fn draw_commits_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(Style::default())
+        .border_style(if app.current_block == utils::Blocks::Fourth {
+            Style::default().fg(Color::Green)
+        } else {
+            Style::default()
+        })
         .border_type(BorderType::Plain)
         .borders(Borders::ALL);
 
@@ -168,7 +193,11 @@ fn draw_stash_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(Style::default())
+        .border_style(if app.current_block == utils::Blocks::Fifth {
+            Style::default().fg(Color::Green)
+        } else {
+            Style::default()
+        })
         .border_type(BorderType::Plain)
         .borders(Borders::ALL);
 

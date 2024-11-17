@@ -25,7 +25,7 @@ pub fn run(tick_rate: Duration) -> Result<(), Box<dyn Error>> {
     let mut terminal = Terminal::new(backend)?;
 
     // create app and run it
-    let app = App::new("lrsgit");
+    let app = App::new();
     let app_result = run_app(&mut terminal, app, tick_rate);
 
     // restore terminal
@@ -55,14 +55,12 @@ fn run_app<B: Backend>(
 
         let timeout = tick_rate.saturating_sub(last_tick.elapsed());
         if event::poll(timeout)? {
-            if let Event::Key(key) = event::read()? {
-                if key.kind == KeyEventKind::Press {
-                    match key.code {
-                        KeyCode::Char(c) => app.on_key(c),
-                        _ => {}
-                    }
+            match event::read()? {
+                Event::Key(key_event) if key_event.kind == KeyEventKind::Press => {
+                    app.on_key(key_event.code);
                 }
-            }
+                _ => {}
+            };
         }
         if last_tick.elapsed() >= tick_rate {
             app.on_tick();

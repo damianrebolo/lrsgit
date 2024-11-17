@@ -3,6 +3,7 @@ use std::{error::Error, time::Duration};
 mod app;
 mod crossterm;
 mod ui;
+mod utils;
 
 const TICK_RATE: Duration = Duration::from_millis(500);
 
