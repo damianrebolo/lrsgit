@@ -176,12 +176,22 @@ fn draw_localbranches_block(frame: &mut Frame, app: &App, area: Rect) {
     let branches: Vec<ListItem> = app
         .branches
         .iter()
-        .map(|i| ListItem::new(vec![text::Line::from(Span::raw(i))]))
+        .map(|i| {
+            if app.current_branch == i.to_string() {
+                ListItem::new(vec![text::Line::from(Span::raw(i))]).style(
+                    Style::default()
+                        .fg(Color::LightMagenta)
+                        .add_modifier(Modifier::BOLD),
+                )
+            } else {
+                ListItem::new(vec![text::Line::from(Span::raw(i))])
+            }
+        })
         .collect();
 
     let list = List::new(branches)
         .block(block)
-        .style(Style::new().white())
+        // .style(Style::new().white())
         .highlight_style(Style::default().add_modifier(Modifier::BOLD))
         .highlight_symbol("> ")
         .direction(ListDirection::TopToBottom);
