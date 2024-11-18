@@ -1,7 +1,7 @@
 use ratatui::{
     layout::{Alignment, Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style, Stylize},
-    text::{self, Span},
+    text::{self, Line, Span, Text},
     widgets::{
         block::Title, Block, BorderType, Borders, List, ListDirection, ListItem, Padding, Paragraph,
     },
@@ -95,7 +95,7 @@ fn draw_lrsgit_right_layout(frame: &mut Frame, app: &mut App, area: Rect) {
     draw_commandlog_block(frame, app, blocks_right_column[1]);
 }
 
-fn draw_main_block(frame: &mut Frame, app: &mut App, area: Rect) {
+fn draw_main_block(frame: &mut Frame, app: &App, area: Rect) {
     let title = Title::from(" Status");
 
     let block = Block::bordered()
@@ -140,7 +140,14 @@ fn draw_status_block(frame: &mut Frame, app: &mut App, area: Rect) {
         .border_type(BorderType::Plain)
         .borders(Borders::ALL);
 
-    frame.render_widget(block, area);
+    let text = Text::from(vec![Line::from(vec![
+        format!(" {} -> ", app.current_folder).into(),
+        format!("{}", app.current_branch).magenta(),
+    ])]);
+
+    let paragraph = Paragraph::new(text).left_aligned().block(block);
+
+    frame.render_widget(paragraph, area);
 }
 
 fn draw_files_block(frame: &mut Frame, app: &mut App, area: Rect) {
