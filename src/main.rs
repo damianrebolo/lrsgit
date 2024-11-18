@@ -6,7 +6,7 @@ mod git;
 mod ui;
 mod utils;
 
-const TICK_RATE: Duration = Duration::from_millis(500);
+const TICK_RATE: Duration = Duration::from_millis(1500);
 
 fn main() -> Result<(), Box<dyn Error>> {
     crate::crossterm::run(TICK_RATE)?;
