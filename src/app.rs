@@ -13,12 +13,13 @@ pub struct App {
 
 impl App {
     pub fn new() -> Self {
+        let current_branch = get_current_branch().unwrap();
         App {
             should_quit: false,
+            current_block: Blocks::Status,
             current_folder: get_current_folder(),
-            current_block: Blocks::First,
-            branches: get_local_branches(),
-            current_branch: get_current_branch(),
+            branches: get_local_branches().unwrap(),
+            current_branch,
         }
     }
 
@@ -32,11 +33,16 @@ impl App {
     pub fn on_key(&mut self, key_code: KeyCode) {
         match key_code {
             KeyCode::Char('q') => self.should_quit = true,
-            KeyCode::Char('1') => self.current_block = Blocks::First,
-            KeyCode::Char('2') => self.current_block = Blocks::Second,
-            KeyCode::Char('3') => self.current_block = Blocks::Third,
-            KeyCode::Char('4') => self.current_block = Blocks::Fourth,
-            KeyCode::Char('5') => self.current_block = Blocks::Fifth,
+            KeyCode::Char('1') => self.current_block = Blocks::Status,
+            KeyCode::Char('2') => self.current_block = Blocks::Files,
+            KeyCode::Char('3') => self.current_block = Blocks::LocalBranches,
+            KeyCode::Char('4') => self.current_block = Blocks::Commits,
+            KeyCode::Char('5') => self.current_block = Blocks::Stash,
+            KeyCode::Char('n') => {
+                if self.current_block == Blocks::LocalBranches {
+                    self.show_new_branch_popup = true;
+                }
+            }
             _ => {}
         }
     }

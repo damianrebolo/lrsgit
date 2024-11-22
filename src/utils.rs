@@ -1,12 +1,12 @@
 use std::env;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Debug)]
 pub enum Blocks {
-    First,
-    Second,
-    Third,
-    Fourth,
-    Fifth,
+    Status,
+    Files,
+    LocalBranches,
+    Commits,
+    Stash,
     Main,
     Logs,
 }

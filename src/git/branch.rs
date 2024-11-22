@@ -1,23 +1,63 @@
-use git2::{BranchType, Repository};
+use std::process::Command;
 
-const REPO_PATH: &str = ".";
+pub fn get_current_branch() -> Option<String> {
+    let output = Command::new("git")
+        .arg("rev-parse")
+        .arg("--abbrev-ref")
+        .arg("HEAD")
+        .output();
 
-pub fn get_current_branch() -> String {
-    let repo = Repository::open(REPO_PATH).unwrap();
-    let head = repo.head().unwrap();
-    let head = head.shorthand().unwrap();
-    head.to_string()
+    match output {
+        Ok(output) => {
+            if output.status.success() {
+                Some(String::from_utf8_lossy(&output.stdout).trim().to_string())
+            } else {
+                None
+            }
+        }
+        Err(_) => None,
+    }
 }
 
-pub fn get_local_branches() -> Vec<String> {
-    let repo = Repository::open(REPO_PATH).unwrap();
-    repo.branches(Some(BranchType::Local))
-        .unwrap()
-        .map(|branch| {
-            let (branch, _) = branch.unwrap();
-            branch.name().unwrap().unwrap().to_string()
-        })
-        .collect()
+pub fn get_local_branches() -> Option<Vec<String>> {
+    let output = Command::new("git").arg("branch").output();
+
+    match output {
+        Ok(output) => {
+            if output.status.success() {
+                let branches = String::from_utf8_lossy(&output.stdout)
+                    .lines()
+                    .map(|line| line.trim().trim_start_matches('*').trim().to_string())
+                    .collect();
+                Some(branches)
+            } else {
+                None
+            }
+        }
+        Err(_) => None,
+    }
 }
 
-pub fn new_branch(name: String, base: String) {}
+pub fn create_branch(branch_name: &str) -> Result<(), String> {
+    let output = Command::new("git")
+        .arg("checkout")
+        .arg("-b")
+        .arg(branch_name)
+        .output();
+
+    match output {
+        Ok(output) => {
+            if output.status.success() {
+                Ok(()) // Successfully switched branches
+            } else {
+                // Capture the error message from stderr
+                Err(String::from_utf8_lossy(&output.stderr).trim().to_string())
+            }
+        }
+        Err(err) => Err(format!("Failed to execute git command: {}", err)),
+    }
+}
+
+pub fn delete_branch(branch_name: &str) -> Result<(), String> {
+    Ok(())
+}

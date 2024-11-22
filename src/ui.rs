@@ -104,9 +104,7 @@ fn draw_main_block(frame: &mut Frame, app: &App, area: Rect) {
             Style::default().fg(Color::Green)
         } else {
             Style::default()
-        })
-        .border_type(BorderType::Plain)
-        .borders(Borders::ALL);
+        });
 
     frame.render_widget(block, area);
 }
@@ -120,10 +118,7 @@ fn draw_commandlog_block(frame: &mut Frame, app: &mut App, area: Rect) {
             Style::default().fg(Color::Green)
         } else {
             Style::default()
-        })
-        .border_type(BorderType::Plain)
-        .borders(Borders::ALL);
-
+        });
     frame.render_widget(block, area);
 }
 
@@ -132,7 +127,7 @@ fn draw_status_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(if app.current_block == Blocks::First {
+        .border_style(if app.current_block == Blocks::Status {
             Style::default().fg(Color::Green)
         } else {
             Style::default()
@@ -155,7 +150,7 @@ fn draw_files_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(if app.current_block == Blocks::Second {
+        .border_style(if app.current_block == Blocks::Files {
             Style::default().fg(Color::Green)
         } else {
             Style::default()
@@ -172,7 +167,7 @@ fn draw_localbranches_block(frame: &mut Frame, app: &App, area: Rect) {
     let block = Block::bordered()
         .title(title)
         .padding(Padding::new(1, 1, 0, 0))
-        .border_style(if app.current_block == Blocks::Third {
+        .border_style(if app.current_block == Blocks::LocalBranches {
             Style::default().fg(Color::Green)
         } else {
             Style::default()
@@ -198,7 +193,6 @@ fn draw_localbranches_block(frame: &mut Frame, app: &App, area: Rect) {
 
     let list = List::new(branches)
         .block(block)
-        // .style(Style::new().white())
         .highlight_style(Style::default().add_modifier(Modifier::BOLD))
         .highlight_symbol("> ")
         .direction(ListDirection::TopToBottom);
@@ -227,7 +221,7 @@ fn draw_stash_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(if app.current_block == Blocks::Fifth {
+        .border_style(if app.current_block == Blocks::Stash {
             Style::default().fg(Color::Green)
         } else {
             Style::default()
