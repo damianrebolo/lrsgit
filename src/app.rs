@@ -1,25 +1,32 @@
 use crate::git::branch::{get_current_branch, get_local_branches};
+use crate::git::commits::{get_commits, CommitInfo};
 use crate::utils::{get_current_folder, Blocks};
 
 use crossterm::event::KeyCode;
 
+#[derive(Debug)]
 pub struct App {
     pub should_quit: bool,
+    pub show_new_branch_popup: bool,
     pub current_folder: String,
     pub current_block: Blocks,
     pub branches: Vec<String>,
     pub current_branch: String,
+    pub commits: Vec<CommitInfo>,
 }
 
 impl App {
     pub fn new() -> Self {
         let current_branch = get_current_branch().unwrap();
+        let commits = get_commits(current_branch.as_str()).unwrap();
         App {
             should_quit: false,
+            show_new_branch_popup: false,
             current_block: Blocks::Status,
             current_folder: get_current_folder(),
             branches: get_local_branches().unwrap(),
             current_branch,
+            commits,
         }
     }
 

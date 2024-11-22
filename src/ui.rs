@@ -205,7 +205,8 @@ fn draw_commits_block(frame: &mut Frame, app: &mut App, area: Rect) {
 
     let block = Block::bordered()
         .title(title)
-        .border_style(if app.current_block == Blocks::Fourth {
+        .padding(Padding::new(1, 1, 0, 0))
+        .border_style(if app.current_block == Blocks::Commits {
             Style::default().fg(Color::Green)
         } else {
             Style::default()
@@ -213,7 +214,27 @@ fn draw_commits_block(frame: &mut Frame, app: &mut App, area: Rect) {
         .border_type(BorderType::Plain)
         .borders(Borders::ALL);
 
-    frame.render_widget(block, area);
+    let commits: Vec<ListItem> = app
+        .commits
+        .iter()
+        .map(|commit| {
+            ListItem::new(vec![text::Line::from(Span::raw(format!(
+                "{} {} {} {}",
+                commit.short_hash,
+                commit.user_initials,
+                if commit.upstreamed { "●" } else { "○" },
+                commit.message
+            )))])
+        })
+        .collect();
+
+    let list = List::new(commits)
+        .block(block)
+        .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+        .highlight_symbol("> ")
+        .direction(ListDirection::TopToBottom);
+
+    frame.render_widget(list, area);
 }
 
 fn draw_stash_block(frame: &mut Frame, app: &mut App, area: Rect) {
