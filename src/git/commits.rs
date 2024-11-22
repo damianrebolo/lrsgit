@@ -23,17 +23,18 @@ pub fn get_commits(branch_name: &str) -> Option<Vec<CommitInfo>> {
                 let commits = String::from_utf8_lossy(&output.stdout)
                     .lines()
                     .map(|line| {
-                        let parts: Vec<&str> = line.splitn(3, ' ').collect();
-                        if parts.len() < 3 {
+                        let parts: Vec<&str> = line.splitn(4, ' ').collect();
+                        if parts.len() < 4 {
                             return None; // Skip malformed lines
                         }
 
                         let short_hash = parts[0].to_string();
-                        let user_initials = parts[1]
+                        let user_initials = format!("{} {}", parts[1], parts[2])
+                            .as_str()
                             .split_whitespace()
                             .map(|name| name.chars().next().unwrap_or('_').to_ascii_uppercase())
                             .collect();
-                        let message = parts[2].to_string();
+                        let message = parts[3].to_string();
                         let upstreamed = message.to_lowercase().contains("upstream");
 
                         Some(CommitInfo {
